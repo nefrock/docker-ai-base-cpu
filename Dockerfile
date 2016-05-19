@@ -18,10 +18,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libsnappy-dev \
     protobuf-compiler \
     python-dev \
-    python-numpy \
     python-pip \
-    python-scipy \
     && rm -rf /var/lib/apt/lists/*
+
+RUN pip install numpy scipy 
 
 RUN apt-get update && apt-get install -y \
     cmake \
