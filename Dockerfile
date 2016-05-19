@@ -1,12 +1,19 @@
 FROM ubuntu:14.04
 MAINTAINER ttsurumi@nefrock.com
 
-RUN apt-get update && apt-get install -y --no-install-recommends \
+RUN apt-get update
+
+RUN apt-get install -y --no-install-recommends \
     build-essential \
+    pkg-config \
     cmake \
     git \
     wget \
+    curl \
+    software-properties-common \
+    liblapack-dev \
     libatlas-base-dev \
+    libatlas-dev \
     libboost-all-dev \
     libgflags-dev \
     libgoogle-glog-dev \
@@ -18,29 +25,26 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     protobuf-compiler \
     python-dev \
     python-pip \
-    && rm -rf /var/lib/apt/lists/*
-
-RUN pip install numpy scipy 
-
-RUN apt-get update && apt-get install -y \
-    cmake \
-    curl \
     gfortran \
-    graphicsmagick \
+    zip \
+    unzip
+
+
+RUN add-apt-repository main
+RUN add-apt-repository universe
+RUN add-apt-repository restricted
+RUN add-apt-repository multiverse
+
+RUN apt-get install -y --no-install-recommends \
     libgraphicsmagick1-dev \
-    libatlas-dev \
     libavcodec-dev \
     libavformat-dev \
-    libboost-all-dev \
     libgtk2.0-dev \
     libjpeg-dev \
-    liblapack-dev \
     libswscale-dev \
-    pkg-config \
-    python-protobuf\
-    software-properties-common \
-    zip \
-    && apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+    graphicsmagick
+
+RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 ENV CAFFE_ROOT=/opt/caffe
 WORKDIR $CAFFE_ROOT
@@ -48,11 +52,6 @@ WORKDIR $CAFFE_ROOT
 # FIXME: clone a specific git tag and use ARG instead of ENV once DockerHub supports this.
 ENV CLONE_TAG=master
 
-RUN git clone -b ${CLONE_TAG} --depth 1 https://github.com/BVLC/caffe.git . && \
-    for req in $(cat python/requirements.txt) pydot; do pip install $req; done && \
-    mkdir build && cd build && \
-    cmake -DCPU_ONLY=1 .. && \
-    make -j"$(nproc)"
 
 ENV PYCAFFE_ROOT $CAFFE_ROOT/python
 ENV PYTHONPATH $PYCAFFE_ROOT:$PYTHONPATH
@@ -76,6 +75,13 @@ RUN cd ~ && \
     make -j8 && \
     make install && \
     rm -rf ~/ocv-tmp
+
+RUN git clone -b ${CLONE_TAG} --depth 1 https://github.com/BVLC/caffe.git . && \
+    for req in $(cat python/requirements.txt) pydot; do pip install $req; done && \
+    mkdir build && cd build && \
+    cmake -DCPU_ONLY=1 .. && \
+    make -j"$(nproc)"
+
 
 RUN cd ~ && \
     mkdir -p dlib-tmp && \
