@@ -2,41 +2,46 @@ FROM ubuntu:14.04
 MAINTAINER ttsurumi@nefrock.com
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
-        build-essential \
-        cmake \
-        curl \
-        git \
-        wget \
-        libatlas-base-dev \
-        libboost-all-dev \
-        libgflags-dev \
-        libgoogle-glog-dev \
-        libhdf5-serial-dev \
-        libleveldb-dev \
-        liblmdb-dev \
-        libopencv-dev \
-        libprotobuf-dev \
-        libsnappy-dev \
-        protobuf-compiler \
-        python-dev \
-        python-numpy \
-        python-pip \
-        python-scipy \
-        gfortran \
-        graphicsmagick \
-        libgraphicsmagick1-dev \
-        libatlas-dev \
-        libavcodec-dev \
-        libavformat-dev \
-        libgtk2.0-dev \
-        libjpeg-dev \
-        liblapack-dev \
-        libswscale-dev \
-        pkg-config \
-        python-protobuf\
-        software-properties-common \
-        zip \
-        && apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+    build-essential \
+    cmake \
+    git \
+    wget \
+    libatlas-base-dev \
+    libboost-all-dev \
+    libgflags-dev \
+    libgoogle-glog-dev \
+    libhdf5-serial-dev \
+    libleveldb-dev \
+    liblmdb-dev \
+    libopencv-dev \
+    libprotobuf-dev \
+    libsnappy-dev \
+    protobuf-compiler \
+    python-dev \
+    python-numpy \
+    python-pip \
+    python-scipy \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN apt-get update && apt-get install -y \
+    cmake \
+    curl \
+    gfortran \
+    graphicsmagick \
+    libgraphicsmagick1-dev \
+    libatlas-dev \
+    libavcodec-dev \
+    libavformat-dev \
+    libboost-all-dev \
+    libgtk2.0-dev \
+    libjpeg-dev \
+    liblapack-dev \
+    libswscale-dev \
+    pkg-config \
+    python-protobuf\
+    software-properties-common \
+    zip \
+    && apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 ENV CAFFE_ROOT=/opt/caffe
 WORKDIR $CAFFE_ROOT
