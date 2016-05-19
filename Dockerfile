@@ -13,7 +13,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libhdf5-serial-dev \
     libleveldb-dev \
     liblmdb-dev \
-    libopencv-dev \
     libprotobuf-dev \
     libsnappy-dev \
     protobuf-compiler \
