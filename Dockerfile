@@ -26,10 +26,13 @@ RUN apt-get update && apt-get upgrade -y && apt-get install -y --no-install-reco
     python-dev \
     python-scipy \
     python-numpy \
+    python-tk \
     python3-dev \
     python3-scipy \
     python3-numpy \
+    python3-tk\
     python-pip \
+    python3-pip \
     && rm -rf /var/lib/apt/lists/*
 
 RUN apt-get install -y \
