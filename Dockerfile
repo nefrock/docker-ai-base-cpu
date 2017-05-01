@@ -119,3 +119,14 @@ RUN cd ~ && \
     cd ../../ && \
     python setup.py install
 
+RUN apt-get install -y libopenblas-dev swig
+# install faiss
+WORKDIR /root
+RUN git clone https://github.com/facebookresearch/faiss.git
+COPY faiss/makefile.inc /tmp
+RUN cp /tmp/makefile.inc ~/faiss/ && \
+    cd faiss && \
+    make tests/test_blas -j $(nproc) && \
+    make -j $(nproc) && \
+    make tests/demo_sift1M -j $(nproc) && \
+    make py
