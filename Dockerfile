@@ -82,30 +82,6 @@ RUN cd ~ && \
     apt-get update && \
     rm -rf ~/ocv-tmp
 
-ENV CAFFE_ROOT=/opt/caffe
-WORKDIR $CAFFE_ROOT
-
-# FIXME: clone a specific git tag and use ARG instead of ENV once DockerHub supports this.
-ENV CLONE_TAG=master
-
-
-RUN git clone -b ${CLONE_TAG} --depth 1 https://github.com/BVLC/caffe.git . && \
-    for req in $(cat python/requirements.txt) pydot; do pip install $req; done
-
-COPY caffeconf/Makefile /opt/caffe/
-COPY caffeconf/Makefile.config /opt/caffe/
-
-RUN make all -j"$(nproc)" && \
-    make test -j"$(nproc)" && \
-    make runtest -j"$(nproc)" && \
-    make pycaffe -j"$(nproc)" && \
-    make distribute
-
-ENV PYCAFFE_ROOT $CAFFE_ROOT/python
-ENV PYTHONPATH $PYCAFFE_ROOT:$PYTHONPATH
-ENV PATH $CAFFE_ROOT/build/tools:$PYCAFFE_ROOT:$PATH
-RUN echo "$CAFFE_ROOT/build/lib" >> /etc/ld.so.conf.d/caffe.conf && ldconfig
-
 # install dlib
 RUN cd ~ && \
     mkdir -p dlib-tmp && \
@@ -124,4 +100,3 @@ RUN cd ~ && \
 RUN apt-get install -y libopenblas-dev swig
 
 WORKDIR /root
-
