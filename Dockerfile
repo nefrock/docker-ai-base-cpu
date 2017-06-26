@@ -24,8 +24,6 @@ RUN apt-get update && apt-get upgrade -y && apt-get install -y --no-install-reco
     libsnappy-dev \
     protobuf-compiler \
     python3-dev \
-    python3-scipy \
-    python3-numpy \
     python3-tk\
     python3-pip \
     python3-setuptools \
@@ -51,10 +49,10 @@ RUN apt-get install --assume-yes \
     libtiff5-dev \
     libjasper-dev
 
-RUN ln -s /usr/bin/pip3 /usr/bin/pip
-RUN rm /usr/bin/python
-RUN ln -s /usr/bin/python3 /usr/bin/python
-RUN pip install --upgrade pip
+
+RUN pip3 install --upgrade pip
+RUN pip3 install numpy scipy
+
 
 WORKDIR /workspace
 
@@ -95,7 +93,7 @@ RUN cd ~ && \
     cmake .. && \
     cmake --build .  && \
     cd ../../ && \
-    python setup.py install
+    python3 setup.py install
 
 RUN apt-get install -y libopenblas-dev swig
 
