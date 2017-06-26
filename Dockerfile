@@ -28,8 +28,8 @@ RUN apt-get update && apt-get upgrade -y && apt-get install -y --no-install-reco
     python3-numpy \
     python3-tk\
     python3-pip \
+    python3-setuptools \
     && rm -rf /var/lib/apt/lists/*
-
 
 RUN apt-get install -y \
     gfortran \
@@ -50,6 +50,11 @@ RUN apt-get install --assume-yes \
     libpng12-dev \
     libtiff5-dev \
     libjasper-dev
+
+RUN ln -s /usr/bin/pip3 /usr/bin/pip
+RUN rm /usr/bin/python
+RUN ln -s /usr/bin/python3 /usr/bin/python
+RUN pip install --upgrade pip
 
 WORKDIR /workspace
 
@@ -83,8 +88,6 @@ WORKDIR $CAFFE_ROOT
 # FIXME: clone a specific git tag and use ARG instead of ENV once DockerHub supports this.
 ENV CLONE_TAG=master
 
-RUN ln -s /usr/bin/pip3 /usr/bin/pip
-RUN pip install --upgrade pip
 
 RUN git clone -b ${CLONE_TAG} --depth 1 https://github.com/BVLC/caffe.git . && \
     for req in $(cat python/requirements.txt) pydot; do pip install $req; done
@@ -102,8 +105,6 @@ ENV PYCAFFE_ROOT $CAFFE_ROOT/python
 ENV PYTHONPATH $PYCAFFE_ROOT:$PYTHONPATH
 ENV PATH $CAFFE_ROOT/build/tools:$PYCAFFE_ROOT:$PATH
 RUN echo "$CAFFE_ROOT/build/lib" >> /etc/ld.so.conf.d/caffe.conf && ldconfig
-
-RUN apt-get install -y python-setuptools
 
 # install dlib
 RUN cd ~ && \
